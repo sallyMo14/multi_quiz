@@ -120,9 +120,8 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(34),
+              Expanded(
+                child: Center(
                   child: Image.asset('assets/images/ballon-b.png'),
                 ),
               ),
@@ -145,6 +144,117 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              SizedBox(
+                height: 48,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Bremen',
+                            style: TextStyle(
+                                color: kL2,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.check_rounded,
+                        color: kL2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Bremen',
+                            style: TextStyle(
+                                color: kL2,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.check_rounded,
+                        color: kL2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kG1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Gaza',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.check_rounded,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 48,
               ),
             ],
           ),
