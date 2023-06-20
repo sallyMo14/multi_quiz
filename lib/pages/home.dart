@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:multi_quiz_s_t_tt9/constants.dart';
+import 'package:multi_quiz_s_t_tt9/pages/level_describtion.dart';
+import 'package:multi_quiz_s_t_tt9/pages/multiple_q_screen.dart';
+import 'package:multi_quiz_s_t_tt9/widgets/my_outline_btn.dart';
+
+import '../widgets/my_level_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -12,249 +17,84 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    var questionNumber = 5;
-    var questionsCount = 10;
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              kBlueBg,
-              kL2,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          MYOutlineBtn(
+            icon: Icons.favorite,
+            iconColor: kBlueIcon,
+            bColor: kGreyFont.withOpacity(0.5),
+            function: () {
+              print("11111");
+            },
           ),
-        ),
+          MYOutlineBtn(
+              icon: Icons.person,
+              iconColor: kBlueIcon,
+              bColor: kGreyFont.withOpacity(0.5),
+              function: () {
+                print("2222");
+              }),
+          SizedBox(
+            width: 16,
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 74, left: 24, right: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    height: 44,
-                    width: 44,
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
-                      style: ButtonStyle().copyWith(
-                          shape: MaterialStatePropertyAll(
-                            CircleBorder(),
-                          ),
-                          side: MaterialStatePropertyAll(
-                            BorderSide(color: Colors.white),
-                          ),
-                          padding: MaterialStatePropertyAll(EdgeInsets.all(8))),
-                    ),
-                  ),
-                  // OutlinedButton(
-                  //   onPressed: () {},
-                  //   style: ButtonStyle().copyWith(
-                  //     shape: MaterialStatePropertyAll(
-                  //       RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(25),
-                  //       ),
-                  //     ),
-                  //     side: MaterialStatePropertyAll(
-                  //       BorderSide(color: Colors.white),
-                  //     ),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(
-                  //         Icons.favorite,
-                  //         color: Colors.white,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 8,
-                  //       ),
-                  //       const Text(
-                  //         '3',
-                  //         style: TextStyle(color: Colors.white),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        height: 56,
-                        width: 56,
-                        child: CircularProgressIndicator(
-                          value: 0.7,
-                          color: Colors.white,
-                          backgroundColor: Colors.white12,
-                        ),
-                      ),
-                      Text(
-                        '05',
-                        style: TextStyle(
-                          fontFamily: 'Sf-Pro-Text',
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-
-                  OutlinedButton(
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        side: BorderSide(color: Colors.white)),
-                  )
-                ],
-              ),
-              Expanded(
-                child: Center(
-                  child: Image.asset('assets/images/ballon-b.png'),
-                ),
-              ),
               Text(
-                'question $questionNumber of $questionsCount',
+                'Let\'s Play',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Sf-Pro-Text',
-                  color: Colors.white60,
+                  fontSize: 32,
+                  color: kRedFont,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: kFontFamily,
                 ),
               ),
               SizedBox(
                 height: 8,
               ),
               Text(
-                'In Which City of Germany Is the Largest Port?',
+                'Be the First!',
                 style: TextStyle(
-                  fontSize: 32,
-                  fontFamily: 'Sf-Pro-Text',
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: kGreyFont,
+                  fontFamily: kFontFamily,
                 ),
               ),
               SizedBox(
-                height: 48,
+                height: 24,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+              MyLevelWidget(
+                function: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LevelDescription();
+                      },
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Bremen',
-                            style: TextStyle(
-                                color: kL2,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: kL2,
-                      ),
-                    ],
-                  ),
-                ),
+                  );
+                },
+                icon: Icons.check,
+                title: 'True or False',
+                subtitle: 'Level 1',
+                image: 'assets/images/bags.png',
+                colors: [kL1, kL12],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Bremen',
-                            style: TextStyle(
-                                color: kL2,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: kL2,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kG1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Gaza',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 48,
+              MyLevelWidget(
+                function: () {},
+                icon: Icons.play_arrow,
+                title: 'Multiple Choice',
+                subtitle: 'Level 2',
+                image: 'assets/images/ballon-s.png',
+                colors: [kL2, kL22],
               ),
             ],
           ),
