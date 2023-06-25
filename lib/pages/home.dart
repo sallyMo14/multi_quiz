@@ -89,7 +89,16 @@ class _HomePageState extends State<HomePage> {
                 colors: [kL1, kL12],
               ),
               MyLevelWidget(
-                function: () {},
+                function: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LevelDescription();
+                      },
+                    ),
+                  );
+                },
                 icon: Icons.play_arrow,
                 title: 'Multiple Choice',
                 subtitle: 'Level 2',
