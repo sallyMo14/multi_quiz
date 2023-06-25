@@ -18,7 +18,7 @@ class _MultiQScreenState extends State<MultiQScreen> {
     var questionsCount = 10;
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               kBlueBg,
