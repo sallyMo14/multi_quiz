@@ -2,20 +2,12 @@ import 'package:multi_quiz_s_t_tt9/modules/true_false/question.dart';
 
 class QuizBrain {
   int _questionNumber = 0;
+  int _questionTotal = 0;
 
   final List<Question> _questionBank = [
-    Question(
-      'You can lead a cow down stairs but not up stairs.',
-      false,
-    ),
-    Question(
-      'Approximately one quarter of human bones are in the feet.',
-      true,
-    ),
-    Question(
-      'A slug\'s blood is green.',
-      true,
-    ),
+    Question('You can lead a cow down stairs but not up stairs.', false),
+    Question('Approximately one quarter of human bones are in the feet.', true),
+    Question('A slug\'s blood is green.', true),
   ];
 
   String getQuestionText() {
@@ -24,6 +16,10 @@ class QuizBrain {
 
   bool getQuestionAnswer() {
     return _questionBank[_questionNumber].questionAnswer;
+  }
+
+  int getQuestionNumberTotal() {
+    return _questionBank.length;
   }
 
   void nextQuestion() {
