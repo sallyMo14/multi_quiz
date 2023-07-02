@@ -4,11 +4,26 @@ class QuizBrainMulti {
   int _questionNumber = 0;
 
   final List<QuestionMultiple> _questionBank = [
-    QuestionMultiple('You can lead a cow down stairs but not up stairs.', 1,
+    QuestionMultiple('You can lead a cow down stairs but not up stairs.',
+        0,
+        ['always', 'never', 'sometimes']),
+    QuestionMultiple(
+        'Approximately one quarter of human bones are in the feet.',
+        1,
+        ['agree', 'disagree', 'not sure']),
+    QuestionMultiple('You can lead a cow down stairs but not up stairs.',
+        2,
         ['always', 'never', 'sometimes']),
     QuestionMultiple(
         'Approximately one quarter of human bones are in the feet.',
         0,
+        ['agree', 'disagree', 'not sure']),
+    QuestionMultiple('You can lead a cow down stairs but not up stairs.',
+        1,
+        ['always', 'never', 'sometimes']),
+    QuestionMultiple(
+        'Approximately one quarter of human bones are in the feet.',
+        2,
         ['agree', 'disagree', 'not sure']),
   ];
 
@@ -37,7 +52,12 @@ class QuizBrainMulti {
       return false;
     }
   }
-
+  int getQuestionCount(){
+    return _questionBank.length;
+  }
+  int getQuestionNumber(){
+    return _questionNumber;
+  }
   void reset() {
     _questionNumber = 0;
   }

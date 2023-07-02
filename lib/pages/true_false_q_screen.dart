@@ -21,7 +21,7 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
   bool? iscorrect;
   late Timer timer;
   bool? userchoice;
-  int iconTrue = 0;
+  int _corrwctAnswersNo = 0 ;
   int totalQuestion = 0;
 
   void checkAnswer(bool choice) {
@@ -31,13 +31,15 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
       () {
         if (correctAnswer == choice) {
           iscorrect = true;
+          _corrwctAnswersNo++;
+          score++;
           scoreKeeper.add(
             Icon(
               Icons.check,
               color: Colors.green,
             ),
           );
-          iconTrue++;
+
         } else {
           iscorrect = false;
           scoreKeeper.add(
@@ -49,6 +51,7 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
         }
       },
     );
+
   }
 
   void next() {
@@ -58,7 +61,7 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
       alertFinish();
     } else {
       counter = 10;
-      startTimer();
+       // startTimer();
       iscorrect = null;
       choice = null;
     }
@@ -85,12 +88,20 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
   }
 
   void alertFinish() {
-    Alert(
+    if(_corrwctAnswersNo/quizBrain.getQuestionCount() > .7){
+      setState(() {
+        lvl1IsFinished= true ;
+      });
+
+    }
+    Alert (
         context: context,
         title: 'Finished',
-        desc: 'Your score : $iconTrue from $totalQuestion ',
+        desc: 'Your score : $_corrwctAnswersNo from $totalQuestion ',
         closeIcon: IconButton(
           onPressed: () {
+
+            quizBrain.reset();
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -98,6 +109,8 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
               ),
             );
             setState(() {
+              _corrwctAnswersNo=0;
+              scoreKeeper.clear();
               counter = 10;
               choice = null;
               userchoice = null;
@@ -121,9 +134,11 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
 
   @override
   void initState() {
+    _corrwctAnswersNo=0;
     startTimer();
     super.initState();
-    totalQuestion = quizBrain.getQuestionNumberTotal();
+    totalQuestion = quizBrain.getQuestionCount();
+    quizBrain.reset();
   }
 
   @override
@@ -139,8 +154,9 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              kL1,
               kRedFont,
+              kL1,
+
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -149,8 +165,9 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
         child: Padding(
           padding: const EdgeInsets.only(top: 74, left: 24, right: 24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -229,187 +246,204 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
                   ),
                 ),
               ),
-
-              Expanded(
-                flex: -1,
-                child: Container(
-                  width: 200,
-                  height: 100,
-                  child: Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: ElevatedButton(
-                        onPressed: choice == null
-                            ? () {
-                                choice = true;
-                                checkAnswer(true);
-                                userchoice = true;
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                            disabledBackgroundColor: iscorrect == null
-                                ? Colors.white
-                                : (iscorrect == true && userchoice == true)
-                                    ? Colors.green
-                                    : iscorrect == false && userchoice == true
-                                        ? Colors.red
-                                        : Colors.white,
-                            backgroundColor: iscorrect == null
-                                ? Colors.white
-                                : (iscorrect == true && userchoice == true)
-                                    ? Colors.green
-                                    : iscorrect == false && userchoice == true
-                                        ? Colors.red
-                                        : Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            )),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Center(
-                              child: Text(
-                                'True',
-                                style: TextStyle(
-                                  color: kRedFont,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            iscorrect == null
-                                ? SizedBox()
-                                : iscorrect == true
-                                    ? Icon(
-                                        Icons.check_rounded,
-                                        color: Colors.white,
-                                      )
-                                    : iscorrect == false
-                                        ? Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                          )
-                                        : SizedBox(),
-                          ],
-                        )),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: -1,
-                child: Container(
-                  width: 200,
-                  height: 100,
-                  child: Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: ElevatedButton(
-                        onPressed: choice == null
-                            ? () {
-                                choice = false;
-                                checkAnswer(false);
-                                userchoice = false;
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                            disabledBackgroundColor: iscorrect == null
-                                ? Colors.white
-                                : (iscorrect == true && userchoice == false)
-                                    ? Colors.green
-                                    : iscorrect == false && userchoice == false
-                                        ? Colors.red
-                                        : Colors.white,
-                            backgroundColor: iscorrect == null
-                                ? Colors.white
-                                : iscorrect == true && userchoice == false
-                                    ? Colors.green
-                                    : iscorrect == false && userchoice == false
-                                        ? Colors.red
-                                        : iscorrect = null,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            )),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Center(
-                              child: Text(
-                                'False',
-                                style: TextStyle(
-                                  color: kRedFont,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            iscorrect == null
-                                ? SizedBox()
-                                : iscorrect == true
-                                    ? Icon(
-                                        Icons.check_rounded,
-                                        color: Colors.white,
-                                      )
-                                    : iscorrect == false
-                                        ? Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                          )
-                                        : SizedBox(),
-                          ],
-                        )),
-                  ),
-                ),
-              ),
-
-              Wrap(
-                children: scoreKeeper,
-              ),
-
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      if (quizBrain.isFinished()) {
-                        print('finished');
-                        cancelTimer();
-                        timer = Timer(Duration(seconds: 1), () {
-                          alertFinish();
-                          setState(() {
-                            quizBrain.reset();
-                            scoreKeeper.clear();
-                            iscorrect = null;
-                            choice = null;
-                            counter = 10;
-                          });
-                        });
-                      } else {
-                        next();
-                        iscorrect = null;
-                        choice = null;
-                      }
-                    },
-                    child: Text(
-                      'Next',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  Text(
+
+                    "question ${quizBrain.getQuestionNumber()+1} of ${quizBrain.getQuestionCount()}",
+                    style:const TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Sf-Pro-Text',
+                      color: Colors.white60,
                     ),
                   ),
                 ],
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+
+                child:Row(
+                  children: [
+                    Expanded(
+
+                      child: ElevatedButton(
+                        onPressed:
+                        choice == null ? () {
+
+
+                          choice = true;
+                          checkAnswer(choice!);
+                          if(quizBrain.isFinished()){
+                            Timer(Duration(seconds: 1), () { alertFinish(); });
+
+                          }
+
+
+                          // _choice = null;
+                        } : null,
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: iscorrect == null
+                                ? Colors.white
+                                : (iscorrect == true && choice == true )
+                                ? Colors.green
+                                : iscorrect == false && choice == true
+                                ? Colors.red
+                                : Colors.white,
+                            backgroundColor: iscorrect == null
+                                ? Colors.white
+                                : (iscorrect == true && choice == true)
+                                ? Colors.green
+                                : iscorrect == false && choice == true
+                                ? Colors.red
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 16,
+                            ),),
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Center(
+                                child: Text(
+                                  "True",
+                                  style: TextStyle(
+                                    color: choice==true ? Colors.white : kRedFont,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              iscorrect == null
+                                  ? SizedBox()
+                                  : iscorrect == true
+                                  ? Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                              )
+                                  : iscorrect == false
+                                  ? Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              )
+                                  : SizedBox(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+
+                child:Row(
+                  children: [
+                    Expanded(
+
+                      child: ElevatedButton(
+                        onPressed:
+                        choice == null ? () {
+                          choice = false;
+                        checkAnswer(choice!);
+                          if(quizBrain.isFinished()){
+                            Timer(Duration(seconds: 1), () { alertFinish(); });
+
+
+                          }
+
+
+                          // _choice = null;
+                        } : null,
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: iscorrect == null
+                                ? Colors.white
+                                : (iscorrect == true && choice == false )
+                                ? Colors.green
+                                : iscorrect == false && choice == false
+                                ? Colors.red
+                                : Colors.white,
+                            backgroundColor: iscorrect == null
+                                ? Colors.white
+                                : (iscorrect == true && choice == false)
+                                ? Colors.green
+                                : iscorrect == false && choice == false
+                                ? Colors.red
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 16,
+                            )),
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Center(
+                                child: Text(
+                                  "false",
+                                  style: TextStyle(
+                                    color: choice==false ? Colors.white : kRedFont,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              iscorrect == null
+                                  ? SizedBox()
+                                  : iscorrect == true
+                                  ? Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                              )
+                                  : iscorrect == false
+                                  ? Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              )
+                                  : SizedBox(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+              ),
+
+              SizedBox(
+
+                child: choice==null || quizBrain.isFinished() ? Container(height: 47,) :  ElevatedButton(
+
+                  style: ElevatedButton.styleFrom(backgroundColor: kL32),
+                  onPressed: (){
+                    next();
+                    startTimer();
+                    // _choice=null;
+                  },
+                  child: Text("Next" ,style: TextStyle(color: Colors.pink),),
+                ),
+              ),
+
+
+          Row(children: scoreKeeper,),
               // MYOutlineBtn(icon: null, function: () {  }, bColor: null, iconColor: null,)
             ],
           ),
@@ -418,3 +452,5 @@ class _TrueFalseQuizState extends State<TrueFalseQuiz> {
     );
   }
 }
+
+

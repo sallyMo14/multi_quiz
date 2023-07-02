@@ -1,13 +1,20 @@
-import 'package:multi_quiz_s_t_tt9/modules/true_false/question.dart';
+import 'package:multi_quiz_s_t_tt9/modules/true_false/questionTrueOrFalse.dart';
 
 class QuizBrain {
   int _questionNumber = 0;
   int _questionTotal = 0;
 
   final List<Question> _questionBank = [
-    Question('You can lead a cow down stairs but not up stairs.', false),
-    Question('Approximately one quarter of human bones are in the feet.', true),
-    Question('A slug\'s blood is green.', true),
+    Question('In the animation film “Finding Nemo,” the main protagonist is a pufferfish.', false),
+    Question('Is Mount Kilimanjaro the world’s tallest peak?', false),
+    Question('Spaghetto is the singular form of the word spaghetti', true),
+    Question('Pinocchio was Walt Disney’s first animated feature film in full color. ', false),
+    Question('Venezuela is home to the world’s highest waterfall. ', true),
+    Question('Coffee is a berry-based beverage. ', true),
+    Question('The capital of Australia is Sydney. ', false),
+    Question('The longest river in the world is the Amazon River', false),
+    Question('Polar bears can only live in the Arctic region, not in the Antarctic', true),
+    Question('The United Kingdom is almost the same size as France.', false),
   ];
 
   String getQuestionText() {
@@ -18,16 +25,17 @@ class QuizBrain {
     return _questionBank[_questionNumber].questionAnswer;
   }
 
-  int getQuestionNumberTotal() {
+  int getQuestionCount(){
     return _questionBank.length;
   }
-
   void nextQuestion() {
     if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
     }
   }
-
+  int getQuestionNumber(){
+    return _questionNumber;
+  }
   bool isFinished() {
     if (_questionNumber >= _questionBank.length - 1) {
       return true;

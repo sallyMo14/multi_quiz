@@ -2,33 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:multi_quiz_s_t_tt9/constants.dart';
 import 'package:multi_quiz_s_t_tt9/widgets/my_outline_btn.dart';
 
-import '../modules/true_false/level_inf.dart';
+import '../modules/level_inf.dart';
 
 class MyLevelWidget extends StatelessWidget {
   final Level level;
 
   final Function() function;
-  // final IconData icon;
-  // final String title;
-  // final String subtitle;
-  // final String image;
-  // final List<Color> colors;
 
-  const MyLevelWidget({
+
+
+   MyLevelWidget({
     Key? key,
     required this.level,
     required this.function,
-    // required this.icon,
-    // required this.title,
-    // required this.subtitle,
-    // required this.image,
-    // required this.colors,
+
+
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: function,
+      onTap: level.isEnabled ? function : null,
       child: Stack(
         alignment: Alignment.topRight,
         children: [
@@ -38,7 +32,7 @@ class MyLevelWidget extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: level.color1,
+                colors: level.isEnabled?  level.color_if_Enabled : level.color_if_locked,
               ),
               borderRadius: BorderRadius.circular(30),
             ),
@@ -72,22 +66,34 @@ class MyLevelWidget extends StatelessWidget {
                 SizedBox(
                   height: 4,
                 ),
-                Text(
-                  level.title!,
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: kFontFamily,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      level.title!,
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: kFontFamily,
+                      ),
+                    ),
+                    Container(
+                        width: 50,
+                        height: 50,
+                        child: level.isEnabled? SizedBox( child: Text(""),):  Image.asset("assets/images/lock.png",) ,
+                        // child: Image.asset("assets/images/lock.png",),
+                      ),
+                  ],
                 ),
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 28.0),
-            child: Image.asset(level.image!),
+            child:level.isEnabled?  Image.asset(level.image!):SizedBox(),
           ),
+
         ],
       ),
     );

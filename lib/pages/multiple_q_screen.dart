@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:multi_quiz_s_t_tt9/pages/home.dart';
 import 'package:multi_quiz_s_t_tt9/widgets/my_outline_btn.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../modules/multipe_choice/quizBrainMultiple.dart';
 import '../constants.dart';
 
@@ -15,21 +16,45 @@ class MultiQScreen extends StatefulWidget {
 }
 
 class _MultiQScreenState extends State<MultiQScreen> {
-  QuizBrainMulti quizBrainMulti=QuizBrainMulti();
+  // todo: statatic here may couse something
+  static QuizBrainMulti quizBrainMulti=QuizBrainMulti();
   List<Icon> scoreKeeper=[];
   int? _choice;
   int counter=10;
   late  Timer timer;
-  bool? isCorrect=null;
+  bool? isCorrect = null;
+  int _corrwctAnswersNo = 0 ;
+  int _nuOfQuestions=quizBrainMulti.getQuestionCount();
+  List<String> options= quizBrainMulti.getOptions();
 
+
+
+  @override
+  void initState() {
+    startTimer();
+    quizBrainMulti.reset();
+    super.initState();
+  }
+  void startTimer(){
+    timer=Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+      },);
+      if(counter==0){
+        next();
+        // _choice=null;
+      }
+    },);
+  }
   void checkAnswer(int? userChoice) {
     int correctAnswer = quizBrainMulti.getQuestionAnswer();
     timer.cancel();
-    setState(() {initState(){
+    setState(() {
       if (correctAnswer == userChoice) {
 
           isCorrect=true;
-
+          _corrwctAnswersNo++;
+          score++;
           scoreKeeper.add(
             const Icon(
               Icons.check,
@@ -39,77 +64,100 @@ class _MultiQScreenState extends State<MultiQScreen> {
 
       } else {
         isCorrect=false;
-       initState(){
+
          scoreKeeper.add(
          const  Icon(
              Icons.close,
              color: Colors.red,
            ),
          );
-       }}
-      }
+       }
+
     });
 
+
+  }
+  void next() {
     if (quizBrainMulti.isFinished()) {
+
       print('finished');
       timer.cancel();
-
-      Timer(const Duration(seconds: 1), () {
-        // Alert(context: context, title: "Finished", desc: "you are done").show();
-        setState(() {
-          quizBrainMulti.reset();
-          scoreKeeper.clear();
-          isCorrect=null;
-          userChoice= null;
-          counter=10;
-        });
-      });
+      feedbackAlert();
+      quizBrainMulti.reset();
     } else {
-      quizBrainMulti.nextQuestion();
+
+
+
+      setState(() {
+         isCorrect = null;
+        _choice = null;
+        quizBrainMulti.nextQuestion();
+        counter=10;
+      });
     }
+
   }
-
-
-
   void feedbackAlert(){
-    AlertDialog(
-      title:const Text("finished"),
-      content: const Text("you are done"),
-      actions: [
-        ElevatedButton(onPressed: (){Navigator.of(context).pop(); }, child: const Text("Finish")),
-      ],
-      
-    );
-    
-  }
-
-  void startTimer(){
-    timer=Timer.periodic(const Duration(seconds: 1), (timer) {
+    if(_corrwctAnswersNo/quizBrainMulti.getQuestionCount() > .9){
       setState(() {
-        // counter--;
+        lvl2IsFinished=true;
       });
-      if(counter==0){
-        quizBrainMulti.nextQuestion();
-      }
-    });
+
+    }
+    Alert (
+        context: context,
+        title: 'Finished',
+        desc: 'Your score : $_corrwctAnswersNo from $_nuOfQuestions',
+        closeIcon: IconButton(
+          onPressed: () {
+            quizBrainMulti.reset();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MultiQScreen(),
+              ),
+            );
+            setState(() {
+              quizBrainMulti.reset();
+              scoreKeeper.clear();
+              isCorrect=null;
+              _choice= null;
+              counter=10;
+
+            });
+          },
+          icon: Icon(Icons.close,),
+        ),
+        buttons: [
+          DialogButton(
+            child: const Text('Finished'),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            },
+          )
+        ]).show();
+
+  }
+  Color ButtonColor(correctChoice){
+    Color color=
+    isCorrect == null
+        ? Colors.white
+        : (isCorrect == true && _choice ==correctChoice )
+        ? kG1
+        : (isCorrect == false && _choice == correctChoice)
+        ? kRedFont
+        : Colors.white;
+    return color;
   }
 
-  @override
-  void initState() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
 
-      setState(() {
-        counter--;
-      });
-      if (counter == 0) {
 
-        counter = 10;
-        quizBrainMulti.nextQuestion();
-      }
 
-    });
-    super.initState();
-  }
+
+
+
+
+
 
   @override
   void dispose() {
@@ -119,8 +167,7 @@ class _MultiQScreenState extends State<MultiQScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var questionNumber = 5;
-    var questionsCount = 10;
+
     return Scaffold(
       body: Container(
         decoration:const BoxDecoration(
@@ -136,7 +183,7 @@ class _MultiQScreenState extends State<MultiQScreen> {
         child: Padding(
           padding: const EdgeInsets.only(top: 74, left: 24, right: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,37 +206,11 @@ class _MultiQScreenState extends State<MultiQScreen> {
                           ),
                           (route) => false,
                         );
+                        quizBrainMulti.reset();
                       },
                     ),
                   ),
-                  // OutlinedButton(
-                  //   onPressed: () {},
-                  //   style: ButtonStyle().copyWith(
-                  //     shape: MaterialStatePropertyAll(
-                  //       RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(25),
-                  //       ),
-                  //     ),
-                  //     side: MaterialStatePropertyAll(
-                  //       BorderSide(color: Colors.white),
-                  //     ),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(
-                  //         Icons.favorite,
-                  //         color: Colors.white,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 8,
-                  //       ),
-                  //       const Text(
-                  //         '3',
-                  //         style: TextStyle(color: Colors.white),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -229,18 +250,25 @@ class _MultiQScreenState extends State<MultiQScreen> {
                   )
                 ],
               ),
+              SizedBox(height: 12,),
               Expanded(
                 child: Center(
                   child: Image.asset('assets/images/ballon-b.png'),
                 ),
               ),
-              Text(
-               "question" // .quizBrainMulti.questionNumber()." of ".$questionsCount,
-               , style:const TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Sf-Pro-Text',
-                  color: Colors.white60,
-                ),
+              SizedBox(height: 12,),
+              Row(
+                children: [
+                  Text(
+
+                   "question ${quizBrainMulti.getQuestionNumber()+1} of ${quizBrainMulti.getQuestionCount()}",
+                    style:const TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Sf-Pro-Text',
+                      color: Colors.white60,
+                    ),
+                  ),
+                ],
               ),
              const SizedBox(
                 height: 8,
@@ -257,139 +285,267 @@ class _MultiQScreenState extends State<MultiQScreen> {
              const SizedBox(
                 height: 48,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _choice=3;
-                      checkAnswer(_choice);
-                    },);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding:const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child:const Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Bremen',
-                            style: TextStyle(
-                                color: kL2,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: kL2,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                  _choice=3;
-                  checkAnswer(_choice);
-                  },);},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding:const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child:const Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Bremen',
-                            style: TextStyle(
-                                color: kL2,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: kL2,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-
-                  onPressed: () {
-                    setState(() {
-                      _choice=3;
-                      checkAnswer(_choice);
-                    });
 
 
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kG1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding:const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  child:const Row(
-                    children: [
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Gaza',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18),
-                          ),
+
+            Padding(
+              padding: const EdgeInsets.all(4),
+
+                child:Row(
+                  children: [
+                    Expanded(
+
+                      child: ElevatedButton(
+                        onPressed:
+                             _choice == null ? () {
+                              _choice = 0;
+                             checkAnswer(_choice);
+                            if(quizBrainMulti.isFinished()){
+                              Timer(Duration(seconds: 1), () {feedbackAlert(); });
+
+                            }
+
+
+                            // _choice = null;
+                          } : null,
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 0 )
+                                ? Colors.green
+                                : isCorrect == false && _choice == 0
+                                ? Colors.red
+                                : Colors.white,
+                            backgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 0)
+                                ? Colors.green
+                                : isCorrect == false && _choice == 0
+                                ? Colors.red
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 16,
+                            )),
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Center(
+                                  child: Text(
+                                    options[0],
+                                    style: TextStyle(
+                                      color: _choice==0 ? Colors.white : kBlueBg,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                isCorrect == null
+                                    ? SizedBox()
+                                    : isCorrect == true
+                                    ? Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                )
+                                    : isCorrect == false
+                                    ? Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                )
+                                    : SizedBox(),
+                              ],
+                            ),
                         ),
                       ),
-                      Icon(
-                        Icons.check_rounded,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(
-                height: 48,
-              ),
-              ElevatedButton(
-                onPressed: (){
-                   startTimer();
-                  _choice=null;
-                  isCorrect=null;
-                  counter=10;
-                },
-                child: Text("Next"),
+
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4),
+
+                child:Row(
+                  children: [
+                    Expanded(
+
+                      child: ElevatedButton(
+                        onPressed:
+                            _choice == null ? () {
+                              _choice = 1;
+                              checkAnswer(_choice);
+                              if(quizBrainMulti.isFinished()){
+                                Timer(Duration(seconds: 1), () {feedbackAlert(); });
+
+                              }
+                            // _choice = null;
+                          } : null,
+
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 1)
+                                ? Colors.green
+                                : isCorrect == false && _choice == 1
+                                ? Colors.red
+                                : Colors.white,
+                            backgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 1)
+                                ? Colors.green
+                                : isCorrect == false && _choice == 1
+                                ? Colors.red
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 16,
+                            )),
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Center(
+                                  child: Text(
+                                    options[1],
+                                    style: TextStyle(
+                                      color: _choice==1 ? Colors.white : kBlueBg,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                isCorrect == null
+                                    ? SizedBox()
+                                    : isCorrect == true
+                                    ? Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                )
+                                    : isCorrect == false
+                                    ? Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                )
+                                    : SizedBox( width: 24,),
+                              ],
+                            ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4),
+
+                child:Row(
+                  children: [
+                    Expanded(
+
+                      child: ElevatedButton(
+                        onPressed:
+                            _choice == null ? () {
+                              _choice = 2;
+                              checkAnswer(_choice);
+                              if(quizBrainMulti.isFinished()){
+                                Timer(Duration(seconds: 1), () {feedbackAlert(); });
+
+                              }
+                            // _choice = null;
+                          } : null,
+                        style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 2)
+                                ? Colors.green
+                                : isCorrect == false && _choice == 2
+                                ? Colors.red
+                                : Colors.white,
+                            backgroundColor: isCorrect == null
+                                ? Colors.white
+                                : (isCorrect == true && _choice == 2)
+                                ? Colors.green
+                                : isCorrect == false && _choice == 2
+                                ? Colors.red
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                              vertical:4,
+                              horizontal: 16,
+                            )),
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Center(
+                                  child: Text(
+                                    options[2],
+                                    style: TextStyle(
+                                      color: _choice==2 ? Colors.white : kBlueBg,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                isCorrect == null
+                                    ? SizedBox()
+                                    : isCorrect == true
+                                    ? Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                )
+                                    : isCorrect == false
+                                    ? Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                )
+                                    : SizedBox(),
+                              ],
+                            ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+            ),
+
+
+              SizedBox(
+                child: _choice==null||quizBrainMulti.isFinished() ? Container(height: 57,) :  Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,elevation: 0 ,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+                    onPressed: (){
+                      next();
+                      startTimer();
+                      // _choice=null;
+                    },
+                    child: Text("Next",style: TextStyle(),),
+                  ),//kL2
+                ),
               ),
               SizedBox(height: 50,child: Row(children: scoreKeeper,),)
             ],
@@ -399,3 +555,21 @@ class _MultiQScreenState extends State<MultiQScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
