@@ -1,16 +1,10 @@
-# multi_quiz_s_t_tt9
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Multi Quizz App
+A lightweight Flutter application that presents multiple-choice quiz questions to the user, tracks their score, and displays the results at the end. Designed to be simple, clean, and easy to extend.
+# Features
+* Multiple-choice questions
+* Score tracking
+* Clean and minimal UI
+* Works on Android, iOS, and web
+# Technologies
+  * Flutter
+  * Dart
